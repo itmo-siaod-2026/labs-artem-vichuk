@@ -1,0 +1,51 @@
+goos: linux
+goarch: amd64
+pkg: bdrs/lab-2-geo/tests/kdtree
+cpu: Intel(R) Core(TM) Ultra 7 255H
+BenchmarkKDTreeBuild/size=100000-16         	       7	 179952746 ns/op	    555703 items/s	17518826 B/op	  331072 allocs/op
+BenchmarkKDTreeBuild/size=500000-16         	       1	1071803580 ns/op	    466505 items/s	82875608 B/op	 1524289 allocs/op
+BenchmarkKDTreeBuild/size=1000000-16        	       1	3498326832 ns/op	    285851 items/s	165751352 B/op	 3048577 allocs/op
+BenchmarkKDTreeBuild/size=10000000-16       	       1	25214295217 ns/op	    396600 items/s	1698011152 B/op	31611394 allocs/op
+BenchmarkKDTreeBuild/size=50000000-16       	       1	157806823478 ns/op	    316843 items/s	8792045584 B/op	166445570 allocs/op
+BenchmarkKDTreeNearest/size=100000-16       	   24224	     47778 ns/op	     20930 ops/s	       0 B/op	       0 allocs/op
+BenchmarkKDTreeNearest/size=500000-16       	    8466	    142404 ns/op	      7022 ops/s	       0 B/op	       0 allocs/op
+BenchmarkKDTreeNearest/size=1000000-16      	    4430	    270874 ns/op	      3692 ops/s	       0 B/op	       0 allocs/op
+BenchmarkKDTreeNearest/size=10000000-16     	    1335	    851865 ns/op	      1174 ops/s	       0 B/op	       0 allocs/op
+BenchmarkKDTreeNearest/size=50000000-16     	     538	   2095354 ns/op	       477.2 ops/s	       0 B/op	       0 allocs/op
+BenchmarkKDTreeWithinRadius/size=100000/radius=1000-16         	   65736	     17304 ns/op	     57790 ops/s	      24 B/op	       1 allocs/op
+BenchmarkKDTreeWithinRadius/size=100000/radius=10000-16        	   53872	     21436 ns/op	     46651 ops/s	      27 B/op	       1 allocs/op
+BenchmarkKDTreeWithinRadius/size=100000/radius=50000-16        	   30465	     43040 ns/op	     23234 ops/s	     196 B/op	       3 allocs/op
+BenchmarkKDTreeWithinRadius/size=500000/radius=1000-16         	   17055	     76531 ns/op	     13067 ops/s	      24 B/op	       1 allocs/op
+BenchmarkKDTreeWithinRadius/size=500000/radius=10000-16        	   13024	    105205 ns/op	      9505 ops/s	      48 B/op	       1 allocs/op
+BenchmarkKDTreeWithinRadius/size=500000/radius=50000-16        	    5907	    215759 ns/op	      4635 ops/s	     972 B/op	       7 allocs/op
+BenchmarkKDTreeWithinRadius/size=1000000/radius=1000-16        	    9412	    127000 ns/op	      7874 ops/s	      24 B/op	       1 allocs/op
+BenchmarkKDTreeWithinRadius/size=1000000/radius=10000-16       	    6801	    176611 ns/op	      5662 ops/s	      82 B/op	       2 allocs/op
+BenchmarkKDTreeWithinRadius/size=1000000/radius=50000-16       	    3061	    391402 ns/op	      2555 ops/s	    1904 B/op	       8 allocs/op
+BenchmarkKDTreeWithinRadius/size=10000000/radius=1000-16       	    1736	    587366 ns/op	      1703 ops/s	      27 B/op	       1 allocs/op
+BenchmarkKDTreeWithinRadius/size=10000000/radius=10000-16      	    1094	   1214313 ns/op	       823.5 ops/s	     795 B/op	       6 allocs/op
+BenchmarkKDTreeWithinRadius/size=10000000/radius=50000-16      	     346	   3739726 ns/op	       267.4 ops/s	   17693 B/op	      11 allocs/op
+BenchmarkKDTreeWithinRadius/size=50000000/radius=1000-16       	     762	   1675481 ns/op	       596.8 ops/s	      50 B/op	       1 allocs/op
+BenchmarkKDTreeWithinRadius/size=50000000/radius=10000-16      	     296	   4321186 ns/op	       231.4 ops/s	    3500 B/op	       9 allocs/op
+BenchmarkKDTreeWithinRadius/size=50000000/radius=50000-16      	      78	  14205376 ns/op	        70.40 ops/s	  105765 B/op	      14 allocs/op
+BenchmarkLinearNearest/size=100000-16                          	     235	   5093872 ns/op	       196.3 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearNearest/size=500000-16                          	      45	  34579348 ns/op	        28.92 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearNearest/size=1000000-16                         	      24	  49265917 ns/op	        20.30 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearNearest/size=10000000-16                        	       2	 605007914 ns/op	         1.653 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearNearest/size=50000000-16                        	       1	2822022194 ns/op	         0.3544 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=100000/radius=1000-16         	     254	   4863790 ns/op	       205.6 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=100000/radius=10000-16        	     258	   4970265 ns/op	       201.2 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=100000/radius=50000-16        	     259	   6257742 ns/op	       159.8 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=500000/radius=1000-16         	      44	  27701951 ns/op	        36.10 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=500000/radius=10000-16        	      46	  24975546 ns/op	        40.04 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=500000/radius=50000-16        	      45	  26392478 ns/op	        37.89 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=1000000/radius=1000-16        	      26	  45803879 ns/op	        21.83 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=1000000/radius=10000-16       	      24	  45568376 ns/op	        21.95 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=1000000/radius=50000-16       	      22	  49326853 ns/op	        20.27 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=10000000/radius=1000-16       	       3	 571221983 ns/op	         1.751 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=10000000/radius=10000-16      	       3	 473049887 ns/op	         2.114 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=10000000/radius=50000-16      	       2	 531452932 ns/op	         1.882 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=50000000/radius=1000-16       	       1	2708376469 ns/op	         0.3692 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=50000000/radius=10000-16      	       1	2797233332 ns/op	         0.3575 ops/s	       0 B/op	       0 allocs/op
+BenchmarkLinearWithinRadius/size=50000000/radius=50000-16      	       1	3748769458 ns/op	         0.2668 ops/s	       0 B/op	       0 allocs/op
+PASS
+ok  	bdrs/lab-2-geo/tests/kdtree	783.671s
