@@ -1,0 +1,54 @@
+goos: linux
+goarch: amd64
+pkg: bdrs/lab-1-extendible/tests
+cpu: AMD Ryzen 9 5900HX with Radeon Graphics
+BenchmarkExtendibleBuild/size=10000/limit=32-16                  1    10314022674 ns/op    1031402 ns/item        969.6 ops/s   6594288 B/op    69121 allocs/op
+BenchmarkExtendibleBuild/size=10000/limit=64-16                  1     9542844391 ns/op     954284 ns/item       1048.0 ops/s   6277024 B/op    59993 allocs/op
+BenchmarkExtendibleBuild/size=10000/limit=128-16                 1     9402860694 ns/op     940286 ns/item       1064.0 ops/s   6337064 B/op    55490 allocs/op
+BenchmarkExtendibleBuild/size=50000/limit=32-16                  1    51077229786 ns/op    1021545 ns/item        978.9 ops/s  30194048 B/op   356126 allocs/op
+BenchmarkExtendibleBuild/size=50000/limit=64-16                  1    48854593606 ns/op     977092 ns/item       1023.0 ops/s  28926864 B/op   312249 allocs/op
+BenchmarkExtendibleBuild/size=50000/limit=128-16                 1    47158512767 ns/op     943170 ns/item       1060.0 ops/s  28452616 B/op   281053 allocs/op
+BenchmarkExtendibleBuild/size=100000/limit=32-16                 1   102838722981 ns/op    1028387 ns/item        972.4 ops/s  62356528 B/op   727679 allocs/op
+BenchmarkExtendibleBuild/size=100000/limit=64-16                 1    96493907862 ns/op     964939 ns/item       1036.0 ops/s  59683936 B/op   645824 allocs/op
+BenchmarkExtendibleBuild/size=100000/limit=128-16                1    94519961037 ns/op     945200 ns/item       1058.0 ops/s  60387288 B/op   587535 allocs/op
+BenchmarkExtendibleBuild/size=250000/limit=32-16                 1   258366424512 ns/op    1033466 ns/item        967.6 ops/s 161020568 B/op  1862028 allocs/op
+BenchmarkExtendibleBuild/size=250000/limit=64-16                 1   248104500000 ns/op     992418 ns/item       1007.6 ops/s 145606616 B/op  1633766 allocs/op
+BenchmarkExtendibleBuild/size=250000/limit=128-16                1   240136541776 ns/op     960546 ns/item       1041.0 ops/s 151160984 B/op  1514988 allocs/op
+BenchmarkExtendibleGet/size=10000/limit=32-16             35555055          33.35 ns/op   29985361 ops/s          0 B/op        0 allocs/op
+BenchmarkExtendibleGet/size=10000/limit=64-16             36833535          32.17 ns/op   31085798 ops/s          0 B/op        0 allocs/op
+BenchmarkExtendibleGet/size=10000/limit=128-16            32116804          31.29 ns/op   31960616 ops/s          0 B/op        0 allocs/op
+BenchmarkExtendibleGet/size=50000/limit=32-16             23162990          49.17 ns/op   20336226 ops/s          0 B/op        0 allocs/op
+BenchmarkExtendibleGet/size=50000/limit=64-16             26328188          46.71 ns/op   21410448 ops/s          0 B/op        0 allocs/op
+BenchmarkExtendibleGet/size=50000/limit=128-16            29191100          39.76 ns/op   25152902 ops/s          0 B/op        0 allocs/op
+BenchmarkExtendibleGet/size=100000/limit=32-16            20294515          59.21 ns/op   16887799 ops/s          0 B/op        0 allocs/op
+BenchmarkExtendibleGet/size=100000/limit=64-16            21862063          58.42 ns/op   17117646 ops/s          0 B/op        0 allocs/op
+BenchmarkExtendibleGet/size=100000/limit=128-16           23054629          48.13 ns/op   20776155 ops/s          0 B/op        0 allocs/op
+BenchmarkExtendibleGet/size=250000/limit=32-16             7126201         144.6 ns/op     6915162 ops/s          3 B/op        0 allocs/op
+BenchmarkExtendibleGet/size=250000/limit=64-16            10418730         134.9 ns/op     7415010 ops/s          2 B/op        0 allocs/op
+BenchmarkExtendibleGet/size=250000/limit=128-16           18851971          77.82 ns/op   12850948 ops/s          1 B/op        0 allocs/op
+BenchmarkExtendibleInsert/size=10000/limit=32-16                 1    10779116664 ns/op    1077912 ns/item        927.7 ops/s   6633272 B/op    74642 allocs/op
+BenchmarkExtendibleInsert/size=10000/limit=64-16                 1    10066741781 ns/op    1006674 ns/item        993.4 ops/s   6305128 B/op    62104 allocs/op
+BenchmarkExtendibleInsert/size=10000/limit=128-16                1     9710964648 ns/op     971096 ns/item       1030.0 ops/s   6528696 B/op    55535 allocs/op
+BenchmarkExtendibleInsert/size=50000/limit=32-16                 1    60819112676 ns/op    1216382 ns/item        822.1 ops/s  31182400 B/op   371507 allocs/op
+BenchmarkExtendibleInsert/size=50000/limit=64-16                 1    49599447219 ns/op     991989 ns/item       1008.0 ops/s  29094944 B/op   333617 allocs/op
+BenchmarkExtendibleInsert/size=50000/limit=128-16                1    48413063664 ns/op     968261 ns/item       1033.0 ops/s  30424896 B/op   306520 allocs/op
+BenchmarkExtendibleInsert/size=100000/limit=32-16                1   147244946073 ns/op    1472449 ns/item        679.1 ops/s  64486816 B/op   747957 allocs/op
+BenchmarkExtendibleInsert/size=100000/limit=64-16                1    99227150863 ns/op     992272 ns/item       1008.0 ops/s  61580448 B/op   675627 allocs/op
+BenchmarkExtendibleInsert/size=100000/limit=128-16               1    97368400000 ns/op     973684 ns/item       1027.0 ops/s  60727728 B/op   629568 allocs/op
+BenchmarkExtendibleInsert/size=250000/limit=32-16                1   675908973190 ns/op    2703636 ns/item        369.9 ops/s 176132192 B/op  1972474 allocs/op
+BenchmarkExtendibleInsert/size=250000/limit=64-16                1   331691845719 ns/op    1326767 ns/item        753.7 ops/s 163125744 B/op  1725676 allocs/op
+BenchmarkExtendibleInsert/size=250000/limit=128-16               1   317857099189 ns/op    1271428 ns/item        786.5 ops/s 152226840 B/op  1581183 allocs/op
+BenchmarkExtendibleDelete/size=10000/limit=32-16                 1    14625332026 ns/op    1462533 ns/item        683.7 ops/s   4538856 B/op    59882 allocs/op
+BenchmarkExtendibleDelete/size=10000/limit=64-16                 1    13469761581 ns/op    1346976 ns/item        742.4 ops/s   4381256 B/op    54347 allocs/op
+BenchmarkExtendibleDelete/size=10000/limit=128-16                1    12918400000 ns/op    1291840 ns/item        774.1 ops/s   4400328 B/op    52168 allocs/op
+BenchmarkExtendibleDelete/size=50000/limit=32-16                 1    48457750345 ns/op     969155 ns/item       1032.0 ops/s  21989808 B/op   319164 allocs/op
+BenchmarkExtendibleDelete/size=50000/limit=64-16                 1    48262237403 ns/op     965245 ns/item       1036.0 ops/s  20627272 B/op   289635 allocs/op
+BenchmarkExtendibleDelete/size=50000/limit=128-16                1    46875668492 ns/op     937513 ns/item       1067.0 ops/s  21640144 B/op   267682 allocs/op
+BenchmarkExtendibleDelete/size=100000/limit=32-16                1   102311620186 ns/op    1023116 ns/item        977.4 ops/s  47549104 B/op   653766 allocs/op
+BenchmarkExtendibleDelete/size=100000/limit=64-16                1    97094478257 ns/op     970945 ns/item       1030.0 ops/s  44758832 B/op   600755 allocs/op
+BenchmarkExtendibleDelete/size=100000/limit=128-16               1    94002577370 ns/op     940026 ns/item       1064.0 ops/s  43382096 B/op   560880 allocs/op
+BenchmarkExtendibleDelete/size=250000/limit=32-16                1   566927422964 ns/op    2267710 ns/item        441.0 ops/s 117391912 B/op  1664101 allocs/op
+BenchmarkExtendibleDelete/size=250000/limit=64-16                1   879980165812 ns/op    3519921 ns/item        284.1 ops/s 105811672 B/op  1527939 allocs/op
+BenchmarkExtendibleDelete/size=250000/limit=128-16               1   847423224110 ns/op    3389693 ns/item        295.0 ops/s 102043088 B/op  1455506 allocs/op
+PASS
+ok      bdrs/lab-1-extendible/tests    22629.804s
