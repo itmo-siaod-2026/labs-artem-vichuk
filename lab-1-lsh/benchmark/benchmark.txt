@@ -1,0 +1,30 @@
+goos: linux
+goarch: amd64
+pkg: bdrs/lsh/tests
+cpu: Intel(R) Core(TM) Ultra 7 255H
+BenchmarkLSHBuild/size=10000-16                6         167961570 ns/op             59538 docs/s            16796 ns/doc       37344434 B/op     293268 allocs/op
+BenchmarkLSHBuild/size=50000-16                2         586743596 ns/op             85216 docs/s            11735 ns/doc       179765232 B/op   1464217 allocs/op
+BenchmarkLSHBuild/size=100000-16               1        1163430022 ns/op             85953 docs/s            11634 ns/doc       359274312 B/op   2927768 allocs/op
+BenchmarkLSHBuild/size=250000-16               1        3673367247 ns/op             68057 docs/s            14693 ns/doc       921350136 B/op   7318656 allocs/op
+BenchmarkLSHBuild/size=1000000-16              1        14282725866 ns/op            70015 docs/s            14283 ns/doc       3684697368 B/op 29271432 allocs/op
+BenchmarkLSHBuild/size=10000000-16             1        168990480181 ns/op           59175 docs/s            16899 ns/doc       37517882768 B/op        292809698 allocs/op
+BenchmarkLSHAdd/size=10000-16                118           9221521 ns/op            108442 docs/s             9222 ns/doc        3087723 B/op      31385 allocs/op
+BenchmarkLSHAdd/size=50000-16                 28          41800880 ns/op            119615 docs/s             8360 ns/doc       16275860 B/op     156869 allocs/op
+BenchmarkLSHAdd/size=100000-16                13          79836619 ns/op            125256 docs/s             7984 ns/doc       32907905 B/op     313677 allocs/op
+BenchmarkLSHAdd/size=250000-16                 4         258583468 ns/op             96681 docs/s            10343 ns/doc       126121072 B/op    788999 allocs/op
+BenchmarkLSHAdd/size=1000000-16                1        1096252068 ns/op             91220 docs/s            10962 ns/doc       504924504 B/op   3155535 allocs/op
+BenchmarkLSHAdd/size=10000000-16               1        13949759936 ns/op            71686 docs/s            13950 ns/doc       3087018600 B/op 31371446 allocs/op
+BenchmarkLSHFindDuplicates/size=10000-16                  184674              7621 ns/op            131213 ops/s            1616 B/op         28 allocs/op
+BenchmarkLSHFindDuplicates/size=50000-16                  192198              6264 ns/op            159646 ops/s            1616 B/op         28 allocs/op
+BenchmarkLSHFindDuplicates/size=100000-16                 203642              6160 ns/op            162334 ops/s            1616 B/op         28 allocs/op
+BenchmarkLSHFindDuplicates/size=250000-16                 210064              5528 ns/op            180889 ops/s            1616 B/op         28 allocs/op
+BenchmarkLSHFindDuplicates/size=1000000-16                202687              5602 ns/op            178504 ops/s            1616 B/op         28 allocs/op
+BenchmarkLSHFindDuplicates/size=10000000-16               199603              5537 ns/op            180600 ops/s            1616 B/op         28 allocs/op
+BenchmarkLSHFullScanDuplicates/size=10000-16                 856           1521464 ns/op               657.3 ops/s        246343 B/op         15 allocs/op
+BenchmarkLSHFullScanDuplicates/size=50000-16                  30          40581739 ns/op                24.64 ops/s      1204760 B/op         15 allocs/op
+BenchmarkLSHFullScanDuplicates/size=100000-16                 10         108959114 ns/op                 9.178 ops/s     2400792 B/op         15 allocs/op
+BenchmarkLSHFullScanDuplicates/size=250000-16                  3         371512061 ns/op                 2.692 ops/s     6005274 B/op         15 allocs/op
+BenchmarkLSHFullScanDuplicates/size=1000000-16                 1        2168971844 ns/op                 0.4610 ops/s   24003104 B/op         15 allocs/op
+BenchmarkLSHFullScanDuplicates/size=10000000-16                1        27526097489 ns/op                0.03633 ops/s  240001568 B/op        15 allocs/op
+PASS
+ok      bdrs/lsh/tests  994.558s
