@@ -1,0 +1,60 @@
+goos: linux
+goarch: amd64
+pkg: bdrs/lab-4-concurrency/chashmap
+cpu: Intel(R) Core(TM) Ultra 7 255H
+BenchmarkConcurrentHashMapRead-16           	1000000000	         3.324 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapRead-16           	728934985	         2.334 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapRead-16           	802834400	         1.650 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapRead-16           	1000000000	         3.889 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapRead-16           	551121018	         4.517 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapRead-16           	914137104	         1.509 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapRead-16           	1000000000	         1.337 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapRead-16           	1000000000	         3.548 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapRead-16           	1000000000	         3.279 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapRead-16               	202748041	         5.234 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapRead-16               	212210888	         5.264 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapRead-16               	217393424	         5.805 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapRead-16               	195697228	         5.846 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapRead-16               	234132379	         5.391 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapRead-16               	181075958	         5.934 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapRead-16               	225753884	         5.576 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapRead-16               	223418941	         5.732 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapRead-16               	198315444	         5.540 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdate-16      	   26054	     54152 ns/op	   65598 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapPutUpdate-16      	   31011	     41474 ns/op	   65597 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapPutUpdate-16      	   25221	     72483 ns/op	   65598 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapPutUpdate-16      	   18027	     73205 ns/op	   65598 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapPutUpdate-16      	   27360	     46275 ns/op	   65598 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapPutUpdate-16      	   20038	     56570 ns/op	   65597 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapPutUpdate-16      	   20521	     55805 ns/op	   65598 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapPutUpdate-16      	   26331	     48929 ns/op	   65598 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapPutUpdate-16      	   22044	     54369 ns/op	   65598 B/op	       3 allocs/op
+BenchmarkUnsafeHashMapPutUpdate-16          	161722875	         7.558 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdate-16          	148560308	         7.101 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdate-16          	188438652	         6.627 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdate-16          	179316873	         6.449 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdate-16          	177148430	         6.747 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdate-16          	177787515	         7.438 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdate-16          	152147892	         6.694 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdate-16          	166106012	         6.660 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdate-16          	168520072	         6.698 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKey-16    	 3070174	       360.3 ns/op	     192 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapMergeHotKey-16    	 5367732	       327.4 ns/op	     192 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapMergeHotKey-16    	 4677562	       307.6 ns/op	     192 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapMergeHotKey-16    	 3875845	       313.4 ns/op	     192 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapMergeHotKey-16    	 4001809	       377.5 ns/op	     192 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapMergeHotKey-16    	 3918282	       301.2 ns/op	     192 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapMergeHotKey-16    	 4401931	       291.5 ns/op	     192 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapMergeHotKey-16    	 3429475	       381.7 ns/op	     192 B/op	       3 allocs/op
+BenchmarkConcurrentHashMapMergeHotKey-16    	 3440521	       303.9 ns/op	     192 B/op	       3 allocs/op
+BenchmarkUnsafeHashMapMergeHotKey-16        	202977964	         6.224 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKey-16        	167481355	         6.812 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKey-16        	188449720	         6.185 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKey-16        	188011449	         5.832 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKey-16        	208677417	         5.852 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKey-16        	225564964	         5.775 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKey-16        	218278978	         5.201 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKey-16        	234408613	         5.793 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKey-16        	192418022	         6.629 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	bdrs/lab-4-concurrency/chashmap	111.517s

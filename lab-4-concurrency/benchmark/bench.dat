@@ -1,0 +1,6 @@
+BenchmarkConcurrentHashMapMergeHotKey 329.389 192.000 3.000
+BenchmarkConcurrentHashMapPutUpdate 55918.000 65597.778 3.000
+BenchmarkConcurrentHashMapRead 2.821 0.000 0.000
+BenchmarkUnsafeHashMapMergeHotKey 6.034 0.000 0.000
+BenchmarkUnsafeHashMapPutUpdate 6.886 0.000 0.000
+BenchmarkUnsafeHashMapRead 5.591 0.000 0.000
