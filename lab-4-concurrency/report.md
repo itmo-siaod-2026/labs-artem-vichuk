@@ -2,14 +2,14 @@
 
 ## Идея реализации
 
-Для конкурентности выбран copy-on-write подход:
+Для конкурентности выбран подход с локами на бакеты:
 
-- `Get`, `Size`, `Iterator`, `Pairs` читают атомарно опубликованный снапшот и не берут mutex.
-- `Put`, `Merge`, `Clear` сериализуются одним writer-lock, копируют изменяемую часть структуры и публикуют новый снапшот через `atomic.Pointer`.
-- Узлы опубликованных снапшотов не мутируются, поэтому старые итераторы и параллельные чтения видят консистентную версию таблицы.
-- Хеширование реализовано через `hash/maphash.Comparable`, без `unsafe` и без обращения к внутренним структурам Go runtime.
-
-Линейризация операций записи происходит в момент `atomic.Store` нового снапшота. Линейризация чтения происходит в момент `atomic.Load` снапшота.
+- Каждый бакет хранит свою цепочку элементов и защищается отдельным `sync.RWMutex`.
+- `Get` берет read-lock только на нужный бакет.
+- `Put` и `Merge` берут write-lock только на нужный бакет. Записи в разные бакеты могут выполняться параллельно.
+- Размер таблицы хранится в `atomic.Int64`, поэтому `Size` не берет общий lock.
+- `resizeMu` используется как барьер для операций, которые меняют массив бакетов целиком: `grow`, `Clear`, `Pairs`, `Iterator`. Обычные `Get`, `Put` и `Merge` не сериализуются одним writer-lock'ом на всю таблицу.
+- `Iterator` и `Pairs` копируют пары под read-lock'ами всех бакетов, поэтому возвращают консистентный snapshot.
 
 ## Тестирование
 
@@ -21,13 +21,23 @@
 
 Concurrency-сценарии:
 
-- `TestConcurrentMergeIsLinearizableForSingleKey` запускает 16 goroutine, каждая делает 1000 вызовов `Merge("counter", 1, sum)`. Ожидаемый результат равен `16 * 1000`. Этот тест проверяет, что конкурентные записи в один горячий ключ не теряют обновления и сериализуются writer-lock'ом.
+- `TestConcurrentMergeIsLinearizableForSingleKey` запускает 16 goroutine, каждая делает 1000 вызовов `Merge("counter", 1, sum)`. Ожидаемый результат равен `16 * 1000`. Этот тест проверяет, что конкурентные записи в один горячий ключ не теряют обновления и сериализуются lock'ом одного бакета.
 - `TestConcurrentReadersObserveCompletedWrites` запускает одного writer'а, который делает `Put` для 1000 ключей, и 8 параллельных reader'ов, которые одновременно вызывают `Get` и `Size`. Если reader видит ключ, значение должно быть уже полностью корректным. После завершения writer'а дополнительно проверяется, что все завершенные записи видны в таблице.
-- Вся тестовая пачка запускается с `-race`. Это проверяет, что параллельные `Put`, `Get`, `Size` и `Merge` не создают data race. Для этой реализации это важно, потому что чтения идут без mutex и опираются на `atomic.Pointer` и неизменяемые опубликованные снапшоты.
+- Вся тестовая пачка запускается с `-race`. Это проверяет, что параллельные `Put`, `Get`, `Size` и `Merge` не создают data race. Для этой реализации это важно, потому что операции работают с mutable-цепочками внутри бакетов.
 
 ## Бенчмарки
 
-Сравнение выполнено с `UnsafeHashMap`: это такая же хеш-таблица с закрытой адресацией, но без синхронизации и без copy-on-write. Она нужна только как базовый уровень стоимости структуры без thread-safe гарантий.
+Бенчмарки измеряют latency отдельных операций: вокруг каждого вызова `Get`, `Put`, `Merge` или `Pairs` берется `time.Now()`, после операции считается `time.Since()`, а в `ns/op` записывается средняя длительность именно этих вызовов. Для параллельных сценариев это не throughput-derived `ns/op` из `RunParallel`, а средняя latency операций, выполненных конкурентными goroutine.
+
+Набор сценариев:
+
+- `ConcurrentHashMapReadLatencyParallel`: параллельные чтения из заранее заполненной таблицы.
+- `ConcurrentHashMapPutUpdateLatencySequential` и `ConcurrentHashMapPutUpdateLatencyParallel`: обновление уже существующих ключей.
+- `ConcurrentHashMapPutInsertNoGrowLatency`: вставка новых ключей в таблицу с заранее достаточной емкостью.
+- `ConcurrentHashMapPutInsertWithGrowLatency`: вставка новых ключей с ростом таблицы.
+- `ConcurrentHashMapReadMostlyLatencyParallel`: смешанная нагрузка, примерно 15 чтений на 1 обновление.
+- `ConcurrentHashMapMergeHotKeyLatencyParallel`: конкурентный `Merge` в один горячий ключ.
+- `ConcurrentHashMapPairsSnapshotLatency`: создание snapshot-списка всех пар из 4096 элементов.
 
 ## Графики
 
@@ -35,28 +45,40 @@ Concurrency-сценарии:
 
 ![allocations](benchmark/bench_bytes.png)
 
-| Benchmark | ns/op |
+![allocation count](benchmark/bench_allocs.png)
+
+| Benchmark | avg latency ns/op |
 | --- | ---: |
-| ConcurrentHashMapRead | 2.821 |
-| UnsafeHashMapRead | 5.591 |
-| ConcurrentHashMapPutUpdate | 55918.000 |
-| UnsafeHashMapPutUpdate | 6.886 |
-| ConcurrentHashMapMergeHotKey | 329.389 |
-| UnsafeHashMapMergeHotKey | 6.034 |
+| ConcurrentHashMapReadLatencyParallel | 3511.556 |
+| ConcurrentHashMapPutUpdateLatencySequential | 54.152 |
+| ConcurrentHashMapPutUpdateLatencyParallel | 3661.111 |
+| ConcurrentHashMapPutInsertNoGrowLatency | 204.367 |
+| ConcurrentHashMapPutInsertWithGrowLatency | 369.744 |
+| ConcurrentHashMapReadMostlyLatencyParallel | 3298.778 |
+| ConcurrentHashMapMergeHotKeyLatencyParallel | 11420.111 |
+| ConcurrentHashMapPairsSnapshotLatency | 307580.889 |
 
 | Benchmark | B/op | allocs/op |
 | --- | ---: | ---: |
-| ConcurrentHashMapRead | 0.000 | 0.000 |
-| UnsafeHashMapRead | 0.000 | 0.000 |
-| ConcurrentHashMapPutUpdate | 65597.778 | 3.000 |
-| UnsafeHashMapPutUpdate | 0.000 | 0.000 |
-| ConcurrentHashMapMergeHotKey | 192.000 | 3.000 |
-| UnsafeHashMapMergeHotKey | 0.000 | 0.000 |
+| ConcurrentHashMapReadLatencyParallel | 0.000 | 0.000 |
+| ConcurrentHashMapPutUpdateLatencySequential | 0.000 | 0.000 |
+| ConcurrentHashMapPutUpdateLatencyParallel | 0.000 | 0.000 |
+| ConcurrentHashMapPutInsertNoGrowLatency | 24.000 | 1.000 |
+| ConcurrentHashMapPutInsertWithGrowLatency | 188.000 | 2.000 |
+| ConcurrentHashMapReadMostlyLatencyParallel | 0.000 | 0.000 |
+| ConcurrentHashMapMergeHotKeyLatencyParallel | 0.000 | 0.000 |
+| ConcurrentHashMapPairsSnapshotLatency | 65536.000 | 1.000 |
 
 ## Выводы
 
-Read сценарий показывает, что thread-safe реализация не хуже unsafe-варианта, потому что чтения сводятся к `atomic.Load` снапшота и проходу по неизменяемому списку.
+Чтение в параллельном сценарии занимает в среднем `3511.556 ns/op`. Операция берет `resizeMu.RLock` и `RLock` конкретного бакета, поэтому latency включает стоимость двух read-lock'ов и возможное ожидание при конкурентной работе.
 
-Операции записи заметно дороже unsafe-версии, потому что для линейризуемой публикации приходится копировать массив бакетов или часть цепочки. Особенно дорого выглядят массовые insert/update в большой таблице: это ожидаемая цена copy-on-write дизайна.
+Последовательное обновление существующего ключа занимает `54.152 ns/op` и не аллоцирует память: меняется поле `value` в уже существующем `entry`. Параллельное обновление получает `3661.111 ns/op`, потому что операции конкурируют за locks отдельных бакетов и за общий `resizeMu.RLock`.
 
-`Merge` в один горячий ключ упирается в сериализацию writer-lock.
+Вставка новых ключей без роста таблицы занимает `204.367 ns/op`, `24 B/op` и `1 allocs/op`: это выделение нового узла цепочки. Вставка с ростом таблицы занимает `369.744 ns/op`, `188 B/op` и `2 allocs/op`, потому что часть операций дополнительно переносит элементы в новый массив бакетов.
+
+Смешанная read-mostly нагрузка занимает `3298.778 ns/op` при `0 B/op`: обновления существующих ключей и чтения не создают новых узлов.
+
+`Merge` в один горячий ключ занимает `11420.111 ns/op`, потому что все goroutine сериализуются на lock одного бакета. При распределении ключей по разным бакетам записи могут идти параллельно.
+
+`PairsSnapshot` занимает `307580.889 ns/op`, блокирует все бакеты на чтение и выделяет слайс под 4096 пар, поэтому получает `65536 B/op` и `1 allocs/op`.

@@ -17,14 +17,19 @@ type Pair[K comparable, V any] struct {
 }
 
 type HashMap[K comparable, V any] struct {
-	mu    sync.Mutex
-	seed  maphash.Seed
-	state atomic.Pointer[table[K, V]]
+	resizeMu sync.RWMutex
+	seed     maphash.Seed
+	size     atomic.Int64
+	state    atomic.Pointer[table[K, V]]
 }
 
 type table[K comparable, V any] struct {
-	buckets []*entry[K, V]
-	size    int
+	buckets []bucket[K, V]
+}
+
+type bucket[K comparable, V any] struct {
+	mu   sync.RWMutex
+	head *entry[K, V]
 }
 
 type entry[K comparable, V any] struct {
@@ -34,10 +39,9 @@ type entry[K comparable, V any] struct {
 }
 
 type Iterator[K comparable, V any] struct {
-	table       *table[K, V]
-	bucketIndex int
-	current     *entry[K, V]
-	pair        Pair[K, V]
+	pairs []Pair[K, V]
+	index int
+	pair  Pair[K, V]
 }
 
 func New[K comparable, V any](capacity int) *HashMap[K, V] {
@@ -49,28 +53,51 @@ func New[K comparable, V any](capacity int) *HashMap[K, V] {
 		seed: maphash.MakeSeed(),
 	}
 	m.state.Store(&table[K, V]{
-		buckets: make([]*entry[K, V], nextPowerOfTwo(capacity)),
+		buckets: make([]bucket[K, V], nextPowerOfTwo(capacity)),
 	})
 	return m
 }
 
 func (m *HashMap[K, V]) Put(key K, value V) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+	for {
+		current := m.state.Load()
+		m.resizeMu.RLock()
+		if current != m.state.Load() {
+			m.resizeMu.RUnlock()
+			continue
+		}
 
-	current := m.state.Load()
-	next, _ := current.withPut(m.seed, key, value)
-	m.state.Store(next)
+		index := bucketIndex(m.seed, key, len(current.buckets))
+		b := &current.buckets[index]
+		b.mu.Lock()
+		added := putMutable(&b.head, key, value)
+		var size int64
+		if added {
+			size = m.size.Add(1)
+		} else {
+			size = m.size.Load()
+		}
+		needsGrow := added && int(size)*100 > len(current.buckets)*maxLoadPercent
+		b.mu.Unlock()
+		m.resizeMu.RUnlock()
+
+		if needsGrow {
+			m.grow(current)
+		}
+		return
+	}
 }
 
 func (m *HashMap[K, V]) Get(key K) (V, bool) {
-	current := m.state.Load()
-	if current == nil {
-		var zero V
-		return zero, false
-	}
+	m.resizeMu.RLock()
+	defer m.resizeMu.RUnlock()
 
-	for node := current.buckets[bucketIndex(m.seed, key, len(current.buckets))]; node != nil; node = node.next {
+	current := m.state.Load()
+	b := &current.buckets[bucketIndex(m.seed, key, len(current.buckets))]
+	b.mu.RLock()
+	defer b.mu.RUnlock()
+
+	for node := b.head; node != nil; node = node.next {
 		if node.key == key {
 			return node.value, true
 		}
@@ -81,16 +108,12 @@ func (m *HashMap[K, V]) Get(key K) (V, bool) {
 }
 
 func (m *HashMap[K, V]) Size() int {
-	current := m.state.Load()
-	if current == nil {
-		return 0
-	}
-	return current.size
+	return int(m.size.Load())
 }
 
 func (m *HashMap[K, V]) Clear() {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+	m.resizeMu.Lock()
+	defer m.resizeMu.Unlock()
 
 	current := m.state.Load()
 	capacity := defaultCapacity
@@ -99,35 +122,65 @@ func (m *HashMap[K, V]) Clear() {
 	}
 
 	m.state.Store(&table[K, V]{
-		buckets: make([]*entry[K, V], capacity),
+		buckets: make([]bucket[K, V], capacity),
 	})
+	m.size.Store(0)
 }
 
 func (m *HashMap[K, V]) Merge(key K, value V, merger func(oldValue V, newValue V) V) V {
-	m.mu.Lock()
-	defer m.mu.Unlock()
+	for {
+		current := m.state.Load()
+		m.resizeMu.RLock()
+		if current != m.state.Load() {
+			m.resizeMu.RUnlock()
+			continue
+		}
 
-	current := m.state.Load()
-	next, merged := current.withMerge(m.seed, key, value, merger)
-	m.state.Store(next)
-	return merged
+		index := bucketIndex(m.seed, key, len(current.buckets))
+		b := &current.buckets[index]
+		b.mu.Lock()
+		merged, added := mergeMutable(&b.head, key, value, merger)
+		var size int64
+		if added {
+			size = m.size.Add(1)
+		} else {
+			size = m.size.Load()
+		}
+		needsGrow := added && int(size)*100 > len(current.buckets)*maxLoadPercent
+		b.mu.Unlock()
+		m.resizeMu.RUnlock()
+
+		if needsGrow {
+			m.grow(current)
+		}
+		return merged
+	}
 }
 
 func (m *HashMap[K, V]) Iterator() Iterator[K, V] {
 	return Iterator[K, V]{
-		table: m.state.Load(),
+		pairs: m.Pairs(),
 	}
 }
 
 func (m *HashMap[K, V]) Pairs() []Pair[K, V] {
-	current := m.state.Load()
-	if current == nil {
-		return nil
-	}
+	m.resizeMu.RLock()
+	defer m.resizeMu.RUnlock()
 
-	pairs := make([]Pair[K, V], 0, current.size)
-	for _, bucket := range current.buckets {
-		for node := bucket; node != nil; node = node.next {
+	current := m.state.Load()
+
+	pairs := make([]Pair[K, V], 0, m.Size())
+	for i := range current.buckets {
+		current.buckets[i].mu.RLock()
+	}
+	defer func() {
+		for i := len(current.buckets) - 1; i >= 0; i-- {
+			current.buckets[i].mu.RUnlock()
+		}
+	}()
+
+	for i := range current.buckets {
+		for node := current.buckets[i].head; node != nil; node = node.next {
 			pairs = append(pairs, Pair[K, V]{
 				Key:   node.key,
 				Value: node.value,
@@ -138,141 +191,65 @@ func (m *HashMap[K, V]) Pairs() []Pair[K, V] {
 }
 
 func (it *Iterator[K, V]) Next() bool {
-	if it.table == nil {
+	if it.index >= len(it.pairs) {
 		return false
 	}
-
-	if it.current != nil {
-		it.pair = Pair[K, V]{Key: it.current.key, Value: it.current.value}
-		it.current = it.current.next
-		return true
-	}
-
-	for it.bucketIndex < len(it.table.buckets) {
-		node := it.table.buckets[it.bucketIndex]
-		it.bucketIndex++
-		if node != nil {
-			it.pair = Pair[K, V]{Key: node.key, Value: node.value}
-			it.current = node.next
-			return true
-		}
-	}
-
-	return false
+	it.pair = it.pairs[it.index]
+	it.index++
+	return true
 }
 
 func (it *Iterator[K, V]) Pair() Pair[K, V] {
 	return it.pair
 }
 
-func (t *table[K, V]) withPut(seed maphash.Seed, key K, value V) (*table[K, V], bool) {
-	if t.needsGrow(1) && !t.contains(seed, key) {
-		return t.rebuildWith(seed, key, value, false, nil)
+func (m *HashMap[K, V]) grow(expected *table[K, V]) {
+	m.resizeMu.Lock()
+	defer m.resizeMu.Unlock()
+
+	current := m.state.Load()
+	if current != expected || int(m.size.Load())*100 <= len(current.buckets)*maxLoadPercent {
+		return
 	}
 
-	index := bucketIndex(seed, key, len(t.buckets))
-	buckets := append([]*entry[K, V](nil), t.buckets...)
-	bucket, added := putImmutable(buckets[index], key, value)
-	buckets[index] = bucket
-
-	size := t.size
-	if added {
-		size++
-	}
-	return &table[K, V]{buckets: buckets, size: size}, added
-}
-
-func (t *table[K, V]) withMerge(seed maphash.Seed, key K, value V, merger func(oldValue V, newValue V) V) (*table[K, V], V) {
-	if t.needsGrow(1) && !t.contains(seed, key) {
-		next, _ := t.rebuildWith(seed, key, value, true, merger)
-		return next, value
-	}
-
-	index := bucketIndex(seed, key, len(t.buckets))
-	buckets := append([]*entry[K, V](nil), t.buckets...)
-	bucket, merged, added := mergeImmutable(buckets[index], key, value, merger)
-	buckets[index] = bucket
-
-	size := t.size
-	if added {
-		size++
-	}
-	return &table[K, V]{buckets: buckets, size: size}, merged
-}
-
-func (t *table[K, V]) rebuildWith(seed maphash.Seed, key K, value V, merge bool, merger func(V, V) V) (*table[K, V], bool) {
 	next := &table[K, V]{
-		buckets: make([]*entry[K, V], len(t.buckets)*2),
-		size:    t.size,
+		buckets: make([]bucket[K, V], len(current.buckets)*2),
 	}
-
-	for _, bucket := range t.buckets {
-		for node := bucket; node != nil; node = node.next {
-			index := bucketIndex(seed, node.key, len(next.buckets))
-			next.buckets[index] = &entry[K, V]{
+	for i := range current.buckets {
+		for node := current.buckets[i].head; node != nil; node = node.next {
+			index := bucketIndex(m.seed, node.key, len(next.buckets))
+			next.buckets[index].head = &entry[K, V]{
 				key:   node.key,
 				value: node.value,
-				next:  next.buckets[index],
+				next:  next.buckets[index].head,
 			}
 		}
 	}
-
-	index := bucketIndex(seed, key, len(next.buckets))
-	if merge {
-		bucket, _, added := mergeImmutable(next.buckets[index], key, value, merger)
-		next.buckets[index] = bucket
-		if added {
-			next.size++
-		}
-		return next, added
-	}
-
-	bucket, added := putImmutable(next.buckets[index], key, value)
-	next.buckets[index] = bucket
-	if added {
-		next.size++
-	}
-	return next, added
+	m.state.Store(next)
 }
 
-func (t *table[K, V]) needsGrow(added int) bool {
-	return (t.size+added)*100 > len(t.buckets)*maxLoadPercent
-}
-
-func (t *table[K, V]) contains(seed maphash.Seed, key K) bool {
-	for node := t.buckets[bucketIndex(seed, key, len(t.buckets))]; node != nil; node = node.next {
+func putMutable[K comparable, V any](head **entry[K, V], key K, value V) bool {
+	for node := *head; node != nil; node = node.next {
 		if node.key == key {
-			return true
+			node.value = value
+			return false
 		}
 	}
-	return false
+
+	*head = &entry[K, V]{key: key, value: value, next: *head}
+	return true
 }
 
-func putImmutable[K comparable, V any](head *entry[K, V], key K, value V) (*entry[K, V], bool) {
-	if head == nil {
-		return &entry[K, V]{key: key, value: value}, true
+func mergeMutable[K comparable, V any](head **entry[K, V], key K, value V, merger func(oldValue V, newValue V) V) (V, bool) {
+	for node := *head; node != nil; node = node.next {
+		if node.key == key {
+			node.value = merger(node.value, value)
+			return node.value, false
+		}
 	}
 
-	if head.key == key {
-		return &entry[K, V]{key: key, value: value, next: head.next}, false
-	}
-
-	next, added := putImmutable(head.next, key, value)
-	return &entry[K, V]{key: head.key, value: head.value, next: next}, added
-}
-
-func mergeImmutable[K comparable, V any](head *entry[K, V], key K, value V, merger func(oldValue V, newValue V) V) (*entry[K, V], V, bool) {
-	if head == nil {
-		return &entry[K, V]{key: key, value: value}, value, true
-	}
-
-	if head.key == key {
-		merged := merger(head.value, value)
-		return &entry[K, V]{key: key, value: merged, next: head.next}, merged, false
-	}
-
-	next, merged, added := mergeImmutable(head.next, key, value, merger)
-	return &entry[K, V]{key: head.key, value: head.value, next: next}, merged, added
+	*head = &entry[K, V]{key: key, value: value, next: *head}
+	return value, true
 }
 
 func bucketIndex[K comparable](seed maphash.Seed, key K, buckets int) int {
