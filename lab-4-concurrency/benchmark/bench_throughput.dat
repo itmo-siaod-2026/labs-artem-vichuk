@@ -1,0 +1,4 @@
+BenchmarkConcurrentHashMapReadThroughputParallel 5009045.111 0.000 0.000
+BenchmarkConcurrentHashMapPutUpdateThroughputParallel 4217841.000 0.000 0.000
+BenchmarkConcurrentHashMapReadMostlyThroughputParallel 3753584.778 0.000 0.000
+BenchmarkConcurrentHashMapMergeHotKeyThroughputParallel 2127955.556 0.000 0.000

@@ -27,21 +27,35 @@ Concurrency-сценарии:
 
 ## Бенчмарки
 
-Бенчмарки измеряют latency отдельных операций: вокруг каждого вызова `Get`, `Put`, `Merge` или `Pairs` берется `time.Now()`, после операции считается `time.Since()`, а в `ns/op` записывается средняя длительность именно этих вызовов. Для параллельных сценариев это не throughput-derived `ns/op` из `RunParallel`, а средняя latency операций, выполненных конкурентными goroutine.
+Бенчмарки разделены на две группы.
 
-Набор сценариев:
+Latency-бенчмарки сравнивают `ConcurrentHashMap` с `UnsafeHashMap`: вокруг каждого вызова `Get`, `Put`, `Merge` или `Pairs` берется `time.Now()`, после операции считается `time.Since()`, а в `ns/op` записывается средняя длительность именно этих вызовов. `UnsafeHashMap` используется как baseline обычной неконкурентной хеш-таблицы с той же закрытой адресацией.
 
-- `ConcurrentHashMapReadLatencyParallel`: параллельные чтения из заранее заполненной таблицы.
-- `ConcurrentHashMapPutUpdateLatencySequential` и `ConcurrentHashMapPutUpdateLatencyParallel`: обновление уже существующих ключей.
-- `ConcurrentHashMapPutInsertNoGrowLatency`: вставка новых ключей в таблицу с заранее достаточной емкостью.
-- `ConcurrentHashMapPutInsertWithGrowLatency`: вставка новых ключей с ростом таблицы.
+Throughput-бенчмарки запускаются только для `ConcurrentHashMap` через `RunParallel` и показывают `ops/s`, то есть сколько операций concurrent-реализация выполняет в секунду под параллельной нагрузкой.
+
+Latency-сценарии:
+
+- `ConcurrentHashMapReadLatencySequential` / `UnsafeHashMapReadLatencySequential`: чтение из заранее заполненной таблицы.
+- `ConcurrentHashMapPutUpdateLatencySequential` / `UnsafeHashMapPutUpdateLatencySequential`: обновление уже существующих ключей.
+- `ConcurrentHashMapPutInsertNoGrowLatency` / `UnsafeHashMapPutInsertNoGrowLatency`: вставка новых ключей в таблицу с заранее достаточной емкостью.
+- `ConcurrentHashMapPutInsertWithGrowLatency` / `UnsafeHashMapPutInsertWithGrowLatency`: вставка новых ключей с ростом таблицы.
+- `ConcurrentHashMapMergeHotKeyLatencySequential` / `UnsafeHashMapMergeHotKeyLatencySequential`: `Merge` в один ключ.
+- `ConcurrentHashMapPairsSnapshotLatency` / `UnsafeHashMapPairsSnapshotLatency`: создание snapshot-списка всех пар из 4096 элементов.
 - `ConcurrentHashMapReadMostlyLatencyParallel`: смешанная нагрузка, примерно 15 чтений на 1 обновление.
-- `ConcurrentHashMapMergeHotKeyLatencyParallel`: конкурентный `Merge` в один горячий ключ.
-- `ConcurrentHashMapPairsSnapshotLatency`: создание snapshot-списка всех пар из 4096 элементов.
+- `ConcurrentHashMapPutUpdateLatencyParallel`: параллельное обновление уже существующих ключей.
+
+Throughput-сценарии:
+
+- `ConcurrentHashMapReadThroughputParallel`: параллельное чтение.
+- `ConcurrentHashMapPutUpdateThroughputParallel`: параллельное обновление существующих ключей.
+- `ConcurrentHashMapReadMostlyThroughputParallel`: смешанная read-mostly нагрузка.
+- `ConcurrentHashMapMergeHotKeyThroughputParallel`: конкурентный `Merge` в один горячий ключ.
 
 ## Графики
 
 ![latency](benchmark/bench_ns.png)
+
+![throughput](benchmark/bench_throughput.png)
 
 ![allocations](benchmark/bench_bytes.png)
 
@@ -49,36 +63,55 @@ Concurrency-сценарии:
 
 | Benchmark | avg latency ns/op |
 | --- | ---: |
-| ConcurrentHashMapReadLatencyParallel | 3511.556 |
-| ConcurrentHashMapPutUpdateLatencySequential | 54.152 |
-| ConcurrentHashMapPutUpdateLatencyParallel | 3661.111 |
-| ConcurrentHashMapPutInsertNoGrowLatency | 204.367 |
-| ConcurrentHashMapPutInsertWithGrowLatency | 369.744 |
-| ConcurrentHashMapReadMostlyLatencyParallel | 3298.778 |
-| ConcurrentHashMapMergeHotKeyLatencyParallel | 11420.111 |
-| ConcurrentHashMapPairsSnapshotLatency | 307580.889 |
+| ConcurrentHashMapReadLatencySequential | 57.378 |
+| UnsafeHashMapReadLatencySequential | 34.508 |
+| ConcurrentHashMapPutUpdateLatencySequential | 69.490 |
+| UnsafeHashMapPutUpdateLatencySequential | 33.288 |
+| ConcurrentHashMapPutInsertNoGrowLatency | 205.089 |
+| UnsafeHashMapPutInsertNoGrowLatency | 109.678 |
+| ConcurrentHashMapPutInsertWithGrowLatency | 389.944 |
+| UnsafeHashMapPutInsertWithGrowLatency | 261.256 |
+| ConcurrentHashMapMergeHotKeyLatencySequential | 45.726 |
+| UnsafeHashMapMergeHotKeyLatencySequential | 20.062 |
+| ConcurrentHashMapPairsSnapshotLatency | 309251.889 |
+| UnsafeHashMapPairsSnapshotLatency | 75555.889 |
+| ConcurrentHashMapPutUpdateLatencyParallel | 3950.556 |
+| ConcurrentHashMapReadMostlyLatencyParallel | 3469.444 |
+
+| Benchmark | ops/s |
+| --- | ---: |
+| ConcurrentHashMapReadThroughputParallel | 5009045.111 |
+| ConcurrentHashMapPutUpdateThroughputParallel | 4217841.000 |
+| ConcurrentHashMapReadMostlyThroughputParallel | 3753584.778 |
+| ConcurrentHashMapMergeHotKeyThroughputParallel | 2127955.556 |
 
 | Benchmark | B/op | allocs/op |
 | --- | ---: | ---: |
-| ConcurrentHashMapReadLatencyParallel | 0.000 | 0.000 |
+| ConcurrentHashMapReadLatencySequential | 0.000 | 0.000 |
+| UnsafeHashMapReadLatencySequential | 0.000 | 0.000 |
 | ConcurrentHashMapPutUpdateLatencySequential | 0.000 | 0.000 |
+| UnsafeHashMapPutUpdateLatencySequential | 0.000 | 0.000 |
 | ConcurrentHashMapPutUpdateLatencyParallel | 0.000 | 0.000 |
 | ConcurrentHashMapPutInsertNoGrowLatency | 24.000 | 1.000 |
+| UnsafeHashMapPutInsertNoGrowLatency | 24.000 | 1.000 |
 | ConcurrentHashMapPutInsertWithGrowLatency | 188.000 | 2.000 |
+| UnsafeHashMapPutInsertWithGrowLatency | 92.000 | 2.000 |
 | ConcurrentHashMapReadMostlyLatencyParallel | 0.000 | 0.000 |
-| ConcurrentHashMapMergeHotKeyLatencyParallel | 0.000 | 0.000 |
+| ConcurrentHashMapMergeHotKeyLatencySequential | 0.000 | 0.000 |
+| UnsafeHashMapMergeHotKeyLatencySequential | 0.000 | 0.000 |
 | ConcurrentHashMapPairsSnapshotLatency | 65536.000 | 1.000 |
+| UnsafeHashMapPairsSnapshotLatency | 65536.000 | 1.000 |
 
 ## Выводы
 
-Чтение в параллельном сценарии занимает в среднем `3511.556 ns/op`. Операция берет `resizeMu.RLock` и `RLock` конкретного бакета, поэтому latency включает стоимость двух read-lock'ов и возможное ожидание при конкурентной работе.
+Последовательное чтение занимает `57.378 ns/op` у `ConcurrentHashMap` и `34.508 ns/op` у `UnsafeHashMap`. Разница объясняется синхронизацией: конкурентная таблица берет `resizeMu.RLock` и `RLock` конкретного бакета.
 
-Последовательное обновление существующего ключа занимает `54.152 ns/op` и не аллоцирует память: меняется поле `value` в уже существующем `entry`. Параллельное обновление получает `3661.111 ns/op`, потому что операции конкурируют за locks отдельных бакетов и за общий `resizeMu.RLock`.
+Обновление существующего ключа занимает `69.490 ns/op` у concurrent-таблицы и `33.288 ns/op` у unsafe-таблицы. Обе операции не аллоцируют память, потому что меняется поле `value` в уже существующем `entry`.
 
-Вставка новых ключей без роста таблицы занимает `204.367 ns/op`, `24 B/op` и `1 allocs/op`: это выделение нового узла цепочки. Вставка с ростом таблицы занимает `369.744 ns/op`, `188 B/op` и `2 allocs/op`, потому что часть операций дополнительно переносит элементы в новый массив бакетов.
+Вставка новых ключей без роста таблицы занимает `205.089 ns/op` у concurrent-таблицы и `109.678 ns/op` у unsafe-таблицы. Обе версии получают `24 B/op` и `1 allocs/op`: это выделение нового узла цепочки. При росте таблицы concurrent-версия получает `389.944 ns/op`, `188 B/op` и `2 allocs/op`, unsafe-версия - `261.256 ns/op`, `92 B/op` и `2 allocs/op`.
 
-Смешанная read-mostly нагрузка занимает `3298.778 ns/op` при `0 B/op`: обновления существующих ключей и чтения не создают новых узлов.
+`Merge` в один ключ занимает `45.726 ns/op` у concurrent-таблицы и `20.062 ns/op` у unsafe-таблицы. В параллельном throughput-сценарии hot-key `Merge` дает `2127955.556 ops/s`, потому что все goroutine сериализуются на lock одного бакета.
 
-`Merge` в один горячий ключ занимает `11420.111 ns/op`, потому что все goroutine сериализуются на lock одного бакета. При распределении ключей по разным бакетам записи могут идти параллельно.
+`PairsSnapshot` занимает `309251.889 ns/op` у concurrent-таблицы и `75555.889 ns/op` у unsafe-таблицы. Обе версии выделяют `65536 B/op`, но concurrent-версия дополнительно берет read-lock'и всех бакетов.
 
-`PairsSnapshot` занимает `307580.889 ns/op`, блокирует все бакеты на чтение и выделяет слайс под 4096 пар, поэтому получает `65536 B/op` и `1 allocs/op`.
+Throughput concurrent-таблицы: чтение - `5009045.111 ops/s`, обновление существующих ключей - `4217841.000 ops/s`, read-mostly нагрузка - `3753584.778 ops/s`, hot-key `Merge` - `2127955.556 ops/s`.

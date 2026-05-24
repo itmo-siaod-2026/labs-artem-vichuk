@@ -36,7 +36,7 @@ func (r *latencyRecorder) report(b *testing.B) {
 	b.ReportMetric(avg, "ns/op")
 }
 
-func BenchmarkConcurrentHashMapReadLatencyParallel(b *testing.B) {
+func BenchmarkConcurrentHashMapReadLatencySequential(b *testing.B) {
 	m := New[int, int](benchKeys)
 	for i := 0; i < benchKeys; i++ {
 		m.Put(i, i)
@@ -45,18 +45,14 @@ func BenchmarkConcurrentHashMapReadLatencyParallel(b *testing.B) {
 	latency := newLatencyRecorder()
 	b.ReportAllocs()
 	b.ResetTimer()
-	b.RunParallel(func(pb *testing.PB) {
-		i := 0
-		sum := 0
-		for pb.Next() {
-			start := time.Now()
-			value, _ := m.Get(i & (benchKeys - 1))
-			latency.observe(time.Since(start))
-			sum += value
-			i++
-		}
-		benchmarkSink.Add(int64(sum))
-	})
+	sum := 0
+	for i := 0; i < b.N; i++ {
+		start := time.Now()
+		value, _ := m.Get(i & (benchKeys - 1))
+		latency.observe(time.Since(start))
+		sum += value
+	}
+	benchmarkSink.Store(int64(sum))
 	latency.report(b)
 }
 
@@ -255,22 +251,20 @@ func BenchmarkConcurrentHashMapReadMostlyLatencyParallel(b *testing.B) {
 	latency.report(b)
 }
 
-func BenchmarkConcurrentHashMapMergeHotKeyLatencyParallel(b *testing.B) {
+func BenchmarkConcurrentHashMapMergeHotKeyLatencySequential(b *testing.B) {
 	m := New[string, int](1)
 	key := "counter"
 
 	latency := newLatencyRecorder()
 	b.ReportAllocs()
 	b.ResetTimer()
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			start := time.Now()
-			m.Merge(key, 1, func(oldValue, newValue int) int {
-				return oldValue + newValue
-			})
-			latency.observe(time.Since(start))
-		}
-	})
+	for i := 0; i < b.N; i++ {
+		start := time.Now()
+		m.Merge(key, 1, func(oldValue, newValue int) int {
+			return oldValue + newValue
+		})
+		latency.observe(time.Since(start))
+	}
 	latency.report(b)
 }
 
@@ -306,4 +300,103 @@ func BenchmarkConcurrentHashMapPairsSnapshotLatency(b *testing.B) {
 		latency.observe(time.Since(start))
 	}
 	latency.report(b)
+}
+
+func BenchmarkUnsafeHashMapPairsSnapshotLatency(b *testing.B) {
+	m := NewUnsafe[int, int](benchKeys)
+	for i := 0; i < benchKeys; i++ {
+		m.Put(i, i)
+	}
+
+	latency := newLatencyRecorder()
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		start := time.Now()
+		benchmarkSink.Add(int64(len(m.Pairs())))
+		latency.observe(time.Since(start))
+	}
+	latency.report(b)
+}
+
+func BenchmarkConcurrentHashMapReadThroughputParallel(b *testing.B) {
+	m := New[int, int](benchKeys)
+	for i := 0; i < benchKeys; i++ {
+		m.Put(i, i)
+	}
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		i := 0
+		sum := 0
+		for pb.Next() {
+			value, _ := m.Get(i & (benchKeys - 1))
+			sum += value
+			i++
+		}
+		benchmarkSink.Add(int64(sum))
+	})
+	b.ReportMetric(float64(b.N)/b.Elapsed().Seconds(), "ops/s")
+}
+
+func BenchmarkConcurrentHashMapPutUpdateThroughputParallel(b *testing.B) {
+	m := New[int, int](benchKeys)
+	for i := 0; i < benchKeys; i++ {
+		m.Put(i, i)
+	}
+
+	var nextStart atomic.Uint64
+	b.ReportAllocs()
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		i := int(nextStart.Add(benchKeys))
+		for pb.Next() {
+			m.Put(i&(benchKeys-1), i)
+			i++
+		}
+	})
+	b.ReportMetric(float64(b.N)/b.Elapsed().Seconds(), "ops/s")
+}
+
+func BenchmarkConcurrentHashMapReadMostlyThroughputParallel(b *testing.B) {
+	m := New[int, int](benchKeys)
+	for i := 0; i < benchKeys; i++ {
+		m.Put(i, i)
+	}
+
+	var ops atomic.Uint64
+	b.ReportAllocs()
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		sum := 0
+		for pb.Next() {
+			op := ops.Add(1)
+			key := int(op) & (benchKeys - 1)
+			if op&15 == 0 {
+				m.Put(key, int(op))
+				continue
+			}
+			value, _ := m.Get(key)
+			sum += value
+		}
+		benchmarkSink.Add(int64(sum))
+	})
+	b.ReportMetric(float64(b.N)/b.Elapsed().Seconds(), "ops/s")
+}
+
+func BenchmarkConcurrentHashMapMergeHotKeyThroughputParallel(b *testing.B) {
+	m := New[string, int](1)
+	key := "counter"
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			m.Merge(key, 1, func(oldValue, newValue int) int {
+				return oldValue + newValue
+			})
+		}
+	})
+	b.ReportMetric(float64(b.N)/b.Elapsed().Seconds(), "ops/s")
 }
