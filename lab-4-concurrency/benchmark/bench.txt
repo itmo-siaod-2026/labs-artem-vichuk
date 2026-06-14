@@ -1,0 +1,168 @@
+goos: linux
+goarch: amd64
+pkg: bdrs/lab-4-concurrency/chashmap
+cpu: Intel(R) Core(TM) Ultra 7 255H
+BenchmarkConcurrentHashMapReadLatencySequential-16            	11384349	        53.14 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadLatencySequential-16            	12916970	        42.81 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadLatencySequential-16            	 9645012	        62.05 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadLatencySequential-16            	12847989	        76.36 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadLatencySequential-16            	16392938	        75.27 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadLatencySequential-16            	13130269	        44.45 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadLatencySequential-16            	13643328	        39.59 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadLatencySequential-16            	10850092	        58.78 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadLatencySequential-16            	12556863	        63.95 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapReadLatencySequential-16                	15660194	        38.41 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapReadLatencySequential-16                	12694050	        34.58 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapReadLatencySequential-16                	18311655	        22.25 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapReadLatencySequential-16                	21370773	        27.39 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapReadLatencySequential-16                	18161610	        33.02 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapReadLatencySequential-16                	14945558	        44.49 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapReadLatencySequential-16                	14558534	        28.54 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapReadLatencySequential-16                	17138416	        46.63 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapReadLatencySequential-16                	15707287	        35.26 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencySequential-16       	13094252	        75.99 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencySequential-16       	 8976129	        72.15 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencySequential-16       	11419555	        65.91 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencySequential-16       	10483743	        75.23 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencySequential-16       	11311557	        72.03 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencySequential-16       	11081899	        72.12 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencySequential-16       	11678868	        57.96 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencySequential-16       	13159282	        59.03 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencySequential-16       	13392050	        74.99 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencyParallel-16         	 5798862	      4236 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencyParallel-16         	 4271911	      4202 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencyParallel-16         	 5818208	      3241 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencyParallel-16         	 4211190	      4416 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencyParallel-16         	 4246123	      4257 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencyParallel-16         	 4348012	      4357 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencyParallel-16         	 5101018	      3391 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencyParallel-16         	 4200378	      4203 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateLatencyParallel-16         	 5312103	      3252 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdateLatencySequential-16           	15441837	        33.51 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdateLatencySequential-16           	19361889	        45.20 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdateLatencySequential-16           	14011486	        34.70 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdateLatencySequential-16           	21349590	        28.60 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdateLatencySequential-16           	22015250	        26.58 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdateLatencySequential-16           	18423510	        26.94 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdateLatencySequential-16           	13999700	        31.37 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdateLatencySequential-16           	22106308	        37.57 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapPutUpdateLatencySequential-16           	21752950	        35.12 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutInsertNoGrowLatency-16           	 3778460	       209.9 ns/op	      24 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPutInsertNoGrowLatency-16           	 4063645	       206.0 ns/op	      24 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPutInsertNoGrowLatency-16           	 4049252	       196.4 ns/op	      24 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPutInsertNoGrowLatency-16           	 3939601	       195.3 ns/op	      24 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPutInsertNoGrowLatency-16           	 4067178	       206.8 ns/op	      24 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPutInsertNoGrowLatency-16           	 3823676	       208.0 ns/op	      24 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPutInsertNoGrowLatency-16           	 3961572	       201.0 ns/op	      24 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPutInsertNoGrowLatency-16           	 4035096	       209.1 ns/op	      24 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPutInsertNoGrowLatency-16           	 3926648	       213.3 ns/op	      24 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPutInsertNoGrowLatency-16               	 4975466	       108.2 ns/op	      24 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPutInsertNoGrowLatency-16               	 5688650	       108.6 ns/op	      24 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPutInsertNoGrowLatency-16               	 5947683	       111.7 ns/op	      24 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPutInsertNoGrowLatency-16               	 5520961	       104.0 ns/op	      24 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPutInsertNoGrowLatency-16               	 6190750	       110.5 ns/op	      24 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPutInsertNoGrowLatency-16               	 5757778	       107.7 ns/op	      24 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPutInsertNoGrowLatency-16               	 5519852	       103.7 ns/op	      24 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPutInsertNoGrowLatency-16               	 6298900	       120.4 ns/op	      24 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPutInsertNoGrowLatency-16               	 5629268	       112.3 ns/op	      24 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPutInsertWithGrowLatency-16         	 2371033	       410.5 ns/op	     188 B/op	       2 allocs/op
+BenchmarkConcurrentHashMapPutInsertWithGrowLatency-16         	 2341608	       380.6 ns/op	     188 B/op	       2 allocs/op
+BenchmarkConcurrentHashMapPutInsertWithGrowLatency-16         	 2257410	       373.7 ns/op	     188 B/op	       2 allocs/op
+BenchmarkConcurrentHashMapPutInsertWithGrowLatency-16         	 2526300	       403.5 ns/op	     188 B/op	       2 allocs/op
+BenchmarkConcurrentHashMapPutInsertWithGrowLatency-16         	 2467993	       390.4 ns/op	     188 B/op	       2 allocs/op
+BenchmarkConcurrentHashMapPutInsertWithGrowLatency-16         	 2450551	       389.2 ns/op	     188 B/op	       2 allocs/op
+BenchmarkConcurrentHashMapPutInsertWithGrowLatency-16         	 2516472	       386.1 ns/op	     188 B/op	       2 allocs/op
+BenchmarkConcurrentHashMapPutInsertWithGrowLatency-16         	 2596372	       397.0 ns/op	     188 B/op	       2 allocs/op
+BenchmarkConcurrentHashMapPutInsertWithGrowLatency-16         	 2328331	       378.5 ns/op	     188 B/op	       2 allocs/op
+BenchmarkUnsafeHashMapPutInsertWithGrowLatency-16             	 3101679	       275.5 ns/op	      92 B/op	       2 allocs/op
+BenchmarkUnsafeHashMapPutInsertWithGrowLatency-16             	 3073932	       265.2 ns/op	      92 B/op	       2 allocs/op
+BenchmarkUnsafeHashMapPutInsertWithGrowLatency-16             	 3269625	       249.9 ns/op	      92 B/op	       2 allocs/op
+BenchmarkUnsafeHashMapPutInsertWithGrowLatency-16             	 3113232	       255.0 ns/op	      92 B/op	       2 allocs/op
+BenchmarkUnsafeHashMapPutInsertWithGrowLatency-16             	 3227509	       258.3 ns/op	      92 B/op	       2 allocs/op
+BenchmarkUnsafeHashMapPutInsertWithGrowLatency-16             	 3229539	       252.5 ns/op	      92 B/op	       2 allocs/op
+BenchmarkUnsafeHashMapPutInsertWithGrowLatency-16             	 3381162	       264.0 ns/op	      92 B/op	       2 allocs/op
+BenchmarkUnsafeHashMapPutInsertWithGrowLatency-16             	 3265952	       267.8 ns/op	      92 B/op	       2 allocs/op
+BenchmarkUnsafeHashMapPutInsertWithGrowLatency-16             	 2892111	       263.1 ns/op	      92 B/op	       2 allocs/op
+BenchmarkConcurrentHashMapReadMostlyLatencyParallel-16        	 8106880	      3294 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyLatencyParallel-16        	 5128358	      3533 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyLatencyParallel-16        	 5269630	      3744 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyLatencyParallel-16        	 5665562	      3207 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyLatencyParallel-16        	 4821997	      3490 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyLatencyParallel-16        	 5112144	      3600 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyLatencyParallel-16        	 4806652	      3173 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyLatencyParallel-16        	 4677457	      3717 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyLatencyParallel-16        	 5047749	      3467 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyLatencySequential-16     	16006868	        45.52 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyLatencySequential-16     	15376446	        44.97 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyLatencySequential-16     	14550200	        45.07 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyLatencySequential-16     	13236322	        47.10 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyLatencySequential-16     	13277971	        45.74 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyLatencySequential-16     	13328499	        45.33 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyLatencySequential-16     	12951990	        45.98 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyLatencySequential-16     	15697051	        44.09 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyLatencySequential-16     	13359686	        47.73 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKeyLatencySequential-16         	19077171	        20.60 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKeyLatencySequential-16         	22632754	        19.77 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKeyLatencySequential-16         	22484632	        20.01 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKeyLatencySequential-16         	22429471	        19.80 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKeyLatencySequential-16         	23241667	        19.56 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKeyLatencySequential-16         	22804954	        20.01 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKeyLatencySequential-16         	18935512	        20.59 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKeyLatencySequential-16         	22445709	        20.70 ns/op	       0 B/op	       0 allocs/op
+BenchmarkUnsafeHashMapMergeHotKeyLatencySequential-16         	21109791	        19.52 ns/op	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPairsSnapshotLatency-16             	    3460	    304842 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPairsSnapshotLatency-16             	    3798	    305945 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPairsSnapshotLatency-16             	    3656	    323421 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPairsSnapshotLatency-16             	    3271	    321703 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPairsSnapshotLatency-16             	    4177	    314487 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPairsSnapshotLatency-16             	    3682	    283535 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPairsSnapshotLatency-16             	    3766	    315633 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPairsSnapshotLatency-16             	    3841	    306721 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapPairsSnapshotLatency-16             	    4467	    306980 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPairsSnapshotLatency-16                 	   15547	     74050 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPairsSnapshotLatency-16                 	   14649	     77994 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPairsSnapshotLatency-16                 	   16362	     73314 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPairsSnapshotLatency-16                 	   15253	     72559 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPairsSnapshotLatency-16                 	   15787	     74785 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPairsSnapshotLatency-16                 	   15861	     77295 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPairsSnapshotLatency-16                 	   15837	     75925 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPairsSnapshotLatency-16                 	   15594	     78221 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkUnsafeHashMapPairsSnapshotLatency-16                 	   15337	     75860 ns/op	   65536 B/op	       1 allocs/op
+BenchmarkConcurrentHashMapReadThroughputParallel-16           	 8772444	       178.2 ns/op	   5612181 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadThroughputParallel-16           	 6201993	       210.2 ns/op	   4756497 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadThroughputParallel-16           	 6428440	       200.6 ns/op	   4985609 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadThroughputParallel-16           	 6154537	       179.0 ns/op	   5587177 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadThroughputParallel-16           	 5831954	       211.7 ns/op	   4723962 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadThroughputParallel-16           	 5664758	       206.7 ns/op	   4837092 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadThroughputParallel-16           	 5790198	       202.5 ns/op	   4937829 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadThroughputParallel-16           	 5697986	       214.3 ns/op	   4666675 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadThroughputParallel-16           	 5699841	       201.0 ns/op	   4974384 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateThroughputParallel-16      	 4653067	       252.8 ns/op	   3956129 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateThroughputParallel-16      	 4590854	       247.9 ns/op	   4033295 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateThroughputParallel-16      	 5663995	       220.0 ns/op	   4544935 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateThroughputParallel-16      	 4236510	       274.2 ns/op	   3647167 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateThroughputParallel-16      	 5512738	       208.7 ns/op	   4792446 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateThroughputParallel-16      	 4409822	       261.4 ns/op	   3825491 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateThroughputParallel-16      	 5602719	       217.9 ns/op	   4589591 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateThroughputParallel-16      	 4572540	       254.4 ns/op	   3931324 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapPutUpdateThroughputParallel-16      	 5324599	       215.5 ns/op	   4640191 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyThroughputParallel-16     	 4813260	       260.8 ns/op	   3833723 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyThroughputParallel-16     	 5123286	       265.1 ns/op	   3771682 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyThroughputParallel-16     	 5240904	       261.8 ns/op	   3819081 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyThroughputParallel-16     	 4649961	       276.0 ns/op	   3623127 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyThroughputParallel-16     	 4744412	       272.6 ns/op	   3667763 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyThroughputParallel-16     	 4796161	       271.7 ns/op	   3679999 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyThroughputParallel-16     	 4630249	       266.0 ns/op	   3759211 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyThroughputParallel-16     	 4380220	       270.2 ns/op	   3700780 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapReadMostlyThroughputParallel-16     	 4623241	       254.7 ns/op	   3926897 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyThroughputParallel-16    	 4312728	       470.4 ns/op	   2125963 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyThroughputParallel-16    	 3035121	       442.2 ns/op	   2261440 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyThroughputParallel-16    	 2945986	       446.6 ns/op	   2239201 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyThroughputParallel-16    	 2529008	       480.8 ns/op	   2079969 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyThroughputParallel-16    	 2507431	       473.8 ns/op	   2110742 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyThroughputParallel-16    	 2595968	       477.3 ns/op	   2094976 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyThroughputParallel-16    	 2579384	       477.7 ns/op	   2093529 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyThroughputParallel-16    	 2556349	       483.0 ns/op	   2070582 ops/s	       0 B/op	       0 allocs/op
+BenchmarkConcurrentHashMapMergeHotKeyThroughputParallel-16    	 2515742	       481.9 ns/op	   2075198 ops/s	       0 B/op	       0 allocs/op
+PASS
+ok  	bdrs/lab-4-concurrency/chashmap	269.179s
